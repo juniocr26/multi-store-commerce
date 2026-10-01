@@ -6,7 +6,7 @@ Docker-only startup does not require host Java or Node. Direct development requi
 
 ## Direct application launch
 
-Compose intentionally does not publish PostgreSQL. Use a separately configured local PostgreSQL database for this mode. Create its database/user first, then export real local values. Compose `.env` does not automatically configure direct processes.
+Use the Compose PostgreSQL database through its configured host port (see [connection settings](docker.md#dbeaver-connection)), or a separately configured local PostgreSQL database. For a separate database, create its database/user first. Export the matching local values; when using Compose, set `DB_URL` to `jdbc:postgresql://localhost:<POSTGRES_HOST_PORT>/<POSTGRES_DB>` and use the existing database credentials. Compose `.env` does not automatically configure direct processes.
 
 ```sh
 # PostgreSQL 17 accessible at localhost:5432, with an existing commerce database/user.

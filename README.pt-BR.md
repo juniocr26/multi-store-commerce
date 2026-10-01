@@ -24,7 +24,7 @@ Não sobrescreva um `.env` existente. O primeiro build baixa dependências. Os s
 - OpenAPI (dev): http://localhost:8080/v3/api-docs
 - Probes: http://localhost:8080/actuator/health/liveness e http://localhost:8080/actuator/health/readiness
 
-As portas do host são configuráveis; as portas internas permanecem 4200, 8080 e 5432. PostgreSQL não publica porta.
+As portas do host são configuráveis; as portas internas permanecem 4200, 8080 e 5432. PostgreSQL é configurado em `localhost:${POSTGRES_HOST_PORT:-5432}` para [acesso pelo DBeaver](docs/pt-BR/docker.md#conexão-pelo-dbeaver).
 
 ## Build e testes
 

@@ -6,7 +6,7 @@ Executar somente via Docker não exige Java ou Node no host. Desenvolvimento dir
 
 ## Execução direta
 
-O Compose não publica PostgreSQL. Neste modo, utilize um PostgreSQL local configurado separadamente. Crie banco/usuário antes e exporte valores locais reais. O `.env` do Compose não configura automaticamente esses processos.
+Utilize o PostgreSQL do Compose pela porta configurada no host (consulte as [configurações de conexão](docker.md#conexão-pelo-dbeaver)) ou um PostgreSQL local configurado separadamente. Para um banco separado, crie banco/usuário antes. Exporte os valores correspondentes; ao usar Compose, defina `DB_URL` como `jdbc:postgresql://localhost:<POSTGRES_HOST_PORT>/<POSTGRES_DB>` e utilize as credenciais existentes do banco. O `.env` do Compose não configura automaticamente esses processos.
 
 ```sh
 # PostgreSQL 17 em localhost:5432, com banco e usuário commerce existentes.
