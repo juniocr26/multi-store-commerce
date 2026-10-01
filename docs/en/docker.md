@@ -14,7 +14,7 @@ docker compose ps
 docker compose logs -f backend
 ```
 
-Exactly three services share an internal bridge: frontend, backend and postgres. Frontend, backend and PostgreSQL ports are configured for publication on loopback. A second bridge, `web`, connects only the applications and enables host port publishing: During validation with Docker Engine 29.5.3, ports were not published on containers attached exclusively to an internal network. PostgreSQL remains exclusively on the internal network, preserving the existing network configuration. If your Docker Engine has the internal-network publishing limitation described above, the configured PostgreSQL host port may be unreachable. The database health check uses container-expanded `$$POSTGRES_USER` and `$$POSTGRES_DB`. Backend waits for the database; frontend waits for backend readiness. Restart policy is `unless-stopped`. No external runtime services are needed.
+Exactly three services share an internal bridge: frontend, backend and postgres. Frontend, backend and PostgreSQL ports are configured for publication on loopback. A second bridge, `web`, connects only the applications and enables host port publishing: During validation with Docker Engine 29.5.3, ports were not published on containers attached exclusively to an internal network. PostgreSQL also joins a dedicated non-internal bridge, `db_access`, which enables its loopback host binding on Docker Engine 29.5.3. Only PostgreSQL joins `db_access`; `commerce` remains internal and backend connections still use `postgres:5432`. The database health check uses container-expanded `$$POSTGRES_USER` and `$$POSTGRES_DB`. Backend waits for the database; frontend waits for backend readiness. Restart policy is `unless-stopped`. No external runtime services are needed.
 
 Backend is a multi-stage JDK/Maven Wrapper build and a non-root JRE runtime. Its health check uses Bash `/dev/tcp`, `head` and `grep`, present in the pinned Ubuntu image. There is no source bind over the packaged JAR. Frontend uses non-root Node and `npm ci`. Only `frontend/src` is mounted read-only, keeping Linux dependencies inside the image; Angular polls for live reload. Changes to dependencies, proxy or Angular configuration require a rebuild.
 
@@ -50,13 +50,13 @@ Create a PostgreSQL connection in DBeaver using the values from your existing `.
 
 | Setting | Value |
 | --- | --- |
-| Host | `localhost` |
+| Host | `127.0.0.1` |
 | Port | `POSTGRES_HOST_PORT` (default `5432`) |
 | Database | `POSTGRES_DB` |
 | Username | `POSTGRES_USER` |
 | Password | `POSTGRES_PASSWORD` |
 
-If host port `5432` is already in use, set `POSTGRES_HOST_PORT=5433` in `.env` and use port `5433` in DBeaver. Apply the port mapping with `docker compose up -d postgres`; this retains the existing database bind mount and data. The backend continues connecting to `postgres:5432` within Docker regardless of the host port. Keep the credentials of the already initialized database; no data reset is needed.
+If host port `5432` is already in use, set `POSTGRES_HOST_PORT=5433` in `.env` and use port `5433` in DBeaver. Apply the port mapping with `docker compose up -d --force-recreate postgres`; this retains the existing database bind mount and data. The backend continues connecting to `postgres:5432` within Docker regardless of the host port. Keep the credentials of the already initialized database; no data reset is needed.
 
 ## Schema and development data
 

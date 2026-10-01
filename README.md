@@ -24,7 +24,7 @@ Do not overwrite an existing `.env`. First builds download dependencies. The thr
 - OpenAPI (dev): http://localhost:8080/v3/api-docs
 - Probes: http://localhost:8080/actuator/health/liveness and http://localhost:8080/actuator/health/readiness
 
-Host ports are configurable; internal ports remain 4200, 8080 and 5432. PostgreSQL is configured at `localhost:${POSTGRES_HOST_PORT:-5432}` for [DBeaver access](docs/en/docker.md#dbeaver-connection).
+Host ports are configurable; internal ports remain 4200, 8080 and 5432. PostgreSQL is configured at `127.0.0.1:${POSTGRES_HOST_PORT:-5432}` for [DBeaver access](docs/en/docker.md#dbeaver-connection).
 
 ## Build and test
 

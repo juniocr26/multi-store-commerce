@@ -4,6 +4,8 @@
 
 Docker-only startup does not require host Java or Node. Direct development requires JDK 21 (`JAVA_HOME`), Node 22.23.3 (`frontend/.nvmrc`), npm, and PostgreSQL 17. The Maven Wrapper downloads Maven 3.9.11 on first use. On Windows use `mvnw.cmd` and equivalent shell environment syntax.
 
+For DBeaver on the Docker host, use host `127.0.0.1`, port `POSTGRES_HOST_PORT` from `.env` (default `5432`), database `POSTGRES_DB`, username `POSTGRES_USER`, and password `POSTGRES_PASSWORD`. If port `5432` is occupied, set `POSTGRES_HOST_PORT=5433` and use `5433` in DBeaver. Apply with `docker compose up -d --force-recreate postgres`; existing database files and credentials are preserved.
+
 ## Direct application launch
 
 Use the Compose PostgreSQL database through its configured host port (see [connection settings](docker.md#dbeaver-connection)), or a separately configured local PostgreSQL database. For a separate database, create its database/user first. Export the matching local values; when using Compose, set `DB_URL` to `jdbc:postgresql://localhost:<POSTGRES_HOST_PORT>/<POSTGRES_DB>` and use the existing database credentials. Compose `.env` does not automatically configure direct processes.
