@@ -1,324 +1,83 @@
 # multi-store-commerce
 
-`multi-store-commerce` is a full-stack software engineering portfolio project for a multi-store commerce platform built around a fictional bakery.
+[Português brasileiro](README.pt-BR.md)
 
-The planned implementation uses Java, Spring Boot, Angular, PostgreSQL, and Docker. It will explore store-scoped authorization, product and inventory modeling, checkout, payment integration, webhook idempotency, and automated testing.
+A full-stack portfolio project for a fictional bakery network. **Implemented: the runnable store-directory foundation.** One Spring Boot modular monolith, one Angular application, and PostgreSQL. Stores belong to one network; unrelated-business tenancy is outside this scope.
 
-The project will start with a functional core and evolve incrementally. RabbitMQ, Redis, and WebSockets may be introduced when concrete requirements justify them.
+The backend migrates its schema with Flyway and exposes `GET /api/v1/stores`: active stores ordered by unique slug, explicit `{id, slug, name}` DTOs, and `[]` when empty. Angular includes loading, empty, success, error and retry states. Security denies unmatched routes. Health probes, local OpenAPI, optional fictional seed data and automated tests are included.
 
-> **Status:** Planning. Implementation has not started.
->
-> This README describes the proposed architecture and development scope. It will be updated to reflect the implemented system.
->
-> All payment processing will use Stripe's test environment.
+## Start
 
-## Architecture
-
-The initial architecture consists of an Angular frontend, a Spring Boot modular monolith, and PostgreSQL.
-
-```mermaid
-flowchart TD
-    browser["Browser"]
-    frontend["Angular frontend"]
-    backend["Spring Boot backend"]
-    database["PostgreSQL"]
-    stripe["Stripe test environment"]
-
-    browser --> frontend
-    frontend -->|"REST API"| backend
-    backend --> database
-    backend -->|"Payment requests"| stripe
-    stripe -->|"Payment webhooks"| backend
-```
-
-The frontend will not access the database directly. Business rules, authorization, and persistence will be handled by the backend.
-
-### Modular Monolith
-
-The backend will initially be deployed as one application with explicit business module boundaries.
-
-Proposed modules:
-
-- Identity and access.
-- Store.
-- Catalog.
-- Inventory.
-- Cart.
-- Order.
-- Payment.
-- Delivery.
-
-Notifications and reporting may be introduced as additional modules.
-
-A possible module structure is:
-
-```text
-order/
-├── api/
-├── application/
-├── domain/
-└── infrastructure/
-```
-
-The structure will remain pragmatic: abstractions should clarify responsibilities and support testing.
-
-### Checkout and Payment
-
-The intended flow is:
-
-1. Select a store and add its products to a cart.
-2. Submit checkout to the backend.
-3. Validate prices, availability, stock, and customer input.
-4. Create an order awaiting payment.
-5. Initiate a payment through Stripe.
-6. Receive and validate the Stripe webhook.
-7. Process the event idempotently.
-8. Update payment and order state.
-
-A successful browser redirect will not be treated as proof of payment.
-
-## Technology Stack
-
-### Initial Scope
-
-- Java and Spring Boot.
-- Spring Web.
-- Spring Security.
-- Spring Data JPA and Hibernate.
-- Bean Validation.
-- Angular and TypeScript.
-- PostgreSQL.
-- Flyway or Liquibase — selection pending.
-- Stripe test environment.
-- OpenAPI.
-- JUnit and Mockito.
-- Docker and Docker Compose.
-
-Versions will be specified when the initial applications are created.
-
-### Possible Later Additions
-
-- RabbitMQ for asynchronous processing.
-- Redis for caching or temporary state.
-- WebSockets for order status updates.
-
-These technologies are roadmap candidates, not implemented dependencies.
-
-## Domain Model
-
-Proposed entities:
-
-| Entity            | Responsibility                        |
-| ----------------- | ------------------------------------- |
-| Store             | Store identity and configuration      |
-| User              | Authenticated identity                |
-| StoreMembership   | Administrative access to stores       |
-| Customer          | Customer information                  |
-| Address           | Delivery address                      |
-| Category          | Product classification                |
-| Product           | Shared product information            |
-| StoreProduct      | Store-specific price and availability |
-| Inventory         | Stock associated with a store product |
-| Cart / CartItem   | Shopping selections                   |
-| Order / OrderItem | Purchase records and price snapshots  |
-| Payment           | Payment state and provider references |
-| Delivery          | Delivery information                  |
-
-The initial model represents stores within one network. Support for unrelated businesses with separate tenancy boundaries is outside the initial scope.
-
-### Core Rules
-
-- Each cart belongs to one store.
-- Products from different stores cannot be mixed in one cart.
-- Each order belongs to one store.
-- Checkout revalidates prices, availability, and stock.
-- Order items preserve purchased prices and quantities.
-- Administrative permissions are scoped to authorized stores.
-- Invalid order state transitions must be rejected.
-
-### Inventory Decisions
-
-The implementation must define reservation timing, expiration, confirmation, and release.
-
-Concurrency handling and payments completed after reservation expiration will be documented and tested.
-
-## API
-
-The following endpoints are proposals, not an implemented API contract:
-
-| Method | Endpoint                             | Purpose                             |
-| ------ | ------------------------------------ | ----------------------------------- |
-| GET    | `/stores`                            | List stores                         |
-| GET    | `/stores/{storeId}`                  | Retrieve a store                    |
-| GET    | `/stores/{storeId}/products`         | Browse a store catalog              |
-| POST   | `/stores/{storeId}/orders`           | Submit checkout and create an order |
-| GET    | `/stores/{storeId}/orders/{orderId}` | Retrieve an authorized order        |
-| POST   | `/webhooks/stripe`                   | Receive payment events              |
-
-Authentication, cart management, and administrative endpoints will be defined during implementation.
-
-The webhook endpoint will use Stripe signature verification rather than customer authentication. Order access will require ownership or appropriate administrative permissions.
-
-The final contract will be documented through OpenAPI.
-
-## Authentication and Authorization
-
-Spring Security will enforce access control.
-
-Proposed initial roles:
-
-- `CUSTOMER`
-- `STORE_MANAGER`
-- `PLATFORM_ADMIN`
-
-Authorization will consider both role and resource scope. A store manager must not gain access to another store by changing an identifier in a request.
-
-JWT is under consideration. Token storage, expiration, renewal, and revocation policies remain to be defined.
-
-## Payments and Idempotency
-
-V1 will support card payments in Stripe's test environment.
-
-Payment processing will account for:
-
-- Signature verification.
-- Duplicate webhook deliveries.
-- Concurrent event processing.
-- Failed processing and safe retries.
-- Out-of-order events.
-- Consistent payment and order updates.
-
-An event must not be considered successfully processed solely because it was received.
-
-Database constraints and transaction boundaries will protect against duplicate processing. The exact event tracking strategy will be documented in an ADR.
-
-## Repository Structure
-
-Proposed structure:
-
-```text
-multi-store-commerce/
-├── backend/
-├── frontend/
-├── infrastructure/
-├── docs/
-│   ├── en/
-│   ├── pt-BR/
-│   └── adr/
-├── docker-compose.yml
-├── .env.example
-├── README.md
-└── README.pt-BR.md
-```
-
-## Configuration
-
-The configuration contract will cover:
-
-- Database connection settings.
-- Stripe test credentials.
-- Webhook signing secret.
-- Authentication settings.
-- Allowed frontend origins.
-- Application URLs and environment settings.
-
-An `.env.example` will document required variables without credentials.
-
-Secrets and local `.env` files will remain outside version control.
-
-## Running Locally
-
-The initial Docker Compose environment will include:
-
-- Frontend.
-- Backend.
-- PostgreSQL.
-
-The target workflow is:
+Install Docker with Compose v2, then from the repository root:
 
 ```sh
+cp -n .env.example .env
+# Edit .env: example credentials are for local development only.
 docker compose up --build
 ```
 
-This command is a development goal and is not available yet.
+Do not overwrite an existing `.env`. First builds download dependencies. The three services become ready in order: PostgreSQL, backend, frontend.
 
-Installation steps, ports, migrations, seed data, and test payment instructions will be added once the environment is functional.
+- Application: http://localhost:4200/stores
+- API: http://localhost:8080/api/v1/stores
+- Swagger UI (dev): http://localhost:8080/swagger-ui/index.html
+- OpenAPI (dev): http://localhost:8080/v3/api-docs
+- Probes: http://localhost:8080/actuator/health/liveness and http://localhost:8080/actuator/health/readiness
 
-## Tests
+Host ports are configurable; internal ports remain 4200, 8080 and 5432. PostgreSQL has no published port.
 
-The planned suite will include unit, integration, API, and frontend tests.
+## Build and test
 
-Important scenarios:
+With JDK 21 and Node.js 22.23.3 installed:
 
-- Customers cannot access administrative operations.
-- Store managers cannot administer unauthorized stores.
-- Carts reject products from other stores.
-- Checkout rejects unavailable products.
-- Concurrent checkout respects stock rules.
-- Invalid webhook signatures are rejected.
-- Duplicate events do not duplicate order updates.
-- Failed event processing can be retried safely.
-- Invalid order transitions are rejected.
+```sh
+(cd backend && ./mvnw verify)
+(cd backend && ./mvnw verify -Pintegration) # Requires Docker; real PostgreSQL
+(cd frontend && npm ci && npm run build && npm test)
+docker compose config --quiet
+```
 
-Test commands and infrastructure requirements will be documented alongside the implementation.
+See [setup and testing](docs/en/setup.md), [Docker and configuration](docs/en/docker.md), [architecture](docs/en/architecture.md), [version sources](docs/en/versions.md), and [verification results](docs/en/verification.md).
 
-## Internal Documentation
+## Stack
 
-Planned documentation:
+| Component | Version |
+| --- | --- |
+| Java / Eclipse Temurin | 21 LTS / 21.0.12.1+1 |
+| Spring Boot | 3.5.16 |
+| Maven / Wrapper | 3.9.11 / 3.3.4 |
+| springdoc OpenAPI | 2.8.17 |
+| Angular / CLI & build | 21.2.25 / 21.2.24 |
+| Node.js | 22.23.3 LTS |
+| TypeScript / RxJS | 5.9.3 / 7.8.2 |
+| PostgreSQL | 17.11 (Debian Bookworm) |
 
-- Architecture and module boundaries.
-- Domain model and database relationships.
-- Docker development environment.
-- API and payment flows.
-- Test guide.
-- Architecture Decision Records.
+Spring Boot manages Hibernate, JDBC, Flyway (including PostgreSQL support), JUnit, Mockito and Testcontainers versions. Application dependencies are pinned through the parent POM and npm lockfile; application base images and PostgreSQL use immutable digests.
 
-Documentation links will be added as the corresponding files are created.
+## Organization
 
-## Roadmap
+```text
+backend/             Maven Wrapper, Spring application, migrations, tests, Dockerfile
+frontend/            Angular standalone application, tests, npm lock, Dockerfile
+docs/en/             English guides and preserved roadmap
+docs/pt-BR/          Brazilian Portuguese guides and preserved roadmap
+docs/adr/            Accepted architecture decisions
+docker-compose.yml   Three development services
+.env.example         Documented local configuration
+```
 
-### V1 — Core Platform
+`infrastructure/` is intentionally deferred until supporting configuration has a concrete responsibility. Current infrastructure lives in Compose and application Dockerfiles.
 
-- Store and catalog.
-- Authentication and store-scoped authorization.
-- Cart and checkout.
-- Orders and inventory consistency.
-- Stripe test card payments.
-- Basic administration.
-- Migrations, tests, and Docker environment.
+## Planned work and limits
 
-### V2 — Asynchronous Processing
+Identity/access, store-scoped authorization, customers, catalog, inventory, cart, checkout, orders, Stripe test card payments/webhooks, delivery, notifications, reporting and administration remain **planned**. There are no placeholder endpoints or fake users. RabbitMQ, Redis and WebSockets are future candidates without dependencies or services. See the [preserved domain roadmap](docs/en/roadmap.md).
 
-Evaluate RabbitMQ for notifications and other asynchronous workloads.
+This increment has no write API, pagination, authentication flow, production frontend server or production deployment claim. The frontend uses the development server; backend changes require a rebuild. Data remains in `.dockerized-postgres` after containers are removed. Disabling seed data does not delete previously inserted rows.
 
-Define event delivery guarantees and consistency between database changes and message publication before implementation.
+**Recommended next increment:** a read-only catalog with shared products and explicit store-specific availability, migrations and integration tests. Design authentication and store-scoped authorization before adding administrative writes.
 
-### V3 — Caching
+## Author and license
 
-Evaluate Redis for identified performance or temporary-state requirements.
+Júnio Rosa · [LinkedIn](https://www.linkedin.com/in/j%C3%BAnio-rosa-94b5731b2/)
 
-Document expiration, invalidation, and fallback behavior.
-
-### V4 — Real-Time Updates
-
-Evaluate WebSockets for order tracking, including authorization of subscriptions and reconnection behavior.
-
-## Trade-offs
-
-- A modular monolith simplifies deployment and debugging but requires disciplined module boundaries.
-- Store-aware modeling introduces complexity before multiple stores are populated, while avoiding assumptions that every operation belongs to one global store.
-- A shared PostgreSQL database simplifies initial persistence but requires consistent enforcement of store scope.
-- Local Docker Compose supports reproducibility; it does not demonstrate production availability or scalability.
-- Payment integration requires handling failures and duplicate events across system boundaries.
-- Messaging and caching will be introduced for concrete use cases, with their operational costs documented.
-- Scalability is a design consideration, not a validated claim at this stage.
-
-## Author
-
-Júnio Rosa
-
-[LinkedIn](https://www.linkedin.com/in/j%C3%BAnio-rosa-94b5731b2/)
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+[MIT License](LICENSE)

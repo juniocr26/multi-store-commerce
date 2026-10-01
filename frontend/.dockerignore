@@ -1,0 +1,9 @@
+.git
+.env
+.env.*
+.dockerized-*
+**/.dockerized-*
+node_modules
+dist
+.angular
+out-tsc

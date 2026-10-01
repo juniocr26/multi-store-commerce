@@ -1,0 +1,18 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #faf7f2; color: #30291f; font: 1rem/1.6 system-ui, sans-serif; }
+header, main, footer { max-width: 68rem; margin: auto; padding: 1.5rem; }
+header { display: flex; gap: 1rem; justify-content: space-between; align-items: center; border-bottom: 1px solid #d9d0c2; flex-wrap: wrap; }
+a { color: #664119; }
+.brand { font-size: 1.3rem; font-weight: 750; text-decoration: none; }
+main { min-height: 72vh; padding-top: 3rem; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.2; margin: .5rem 0; }
+h2 { font-size: 1.2rem; }
+.eyebrow { color: #735328; font-weight: 650; }
+section { margin-top: 2rem; }
+.stores { padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; }
+article { background: white; border: 1px solid #d9d0c2; border-radius: .6rem; padding: 1.5rem; height: 100%; overflow-wrap: anywhere; }
+button { background: #664119; color: white; border: 0; border-radius: .3rem; padding: .8rem 1.2rem; font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid #a45117; outline-offset: 4px; }
+footer { border-top: 1px solid #d9d0c2; color: #655b4f; }
+.skip-link { position: absolute; top: -5rem; background: white; padding: .5rem; }
+.skip-link:focus { top: 0; }
