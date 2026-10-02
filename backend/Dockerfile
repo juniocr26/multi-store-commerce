@@ -1,12 +1,17 @@
 # syntax=docker/dockerfile:1
 FROM eclipse-temurin:21.0.12.1_1-jdk-noble@sha256:1afee26c547e1aa89f47404854dd09203b8bd35a2be269e16bdfd69c4a2c2b50 AS build
+# Wrapper 3.3.4 falls back to tar.gz without unzip, but the pinned checksum is
+# for the ZIP. Keep the downloaded archive and integrity check consistent.
+RUN apt-get update && apt-get install -y --no-install-recommends unzip \
+    && rm -rf /var/lib/apt/lists/*
+ARG MAVEN_CACHE_ID=commerce-maven
 WORKDIR /workspace
 COPY .mvn .mvn
 COPY mvnw pom.xml ./
-RUN chmod +x mvnw
-RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -ntp dependency:go-offline
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+RUN --mount=type=cache,id=${MAVEN_CACHE_ID},target=/root/.m2 ./mvnw -B -ntp dependency:go-offline
 COPY src src
-RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -ntp package -DskipTests
+RUN --mount=type=cache,id=${MAVEN_CACHE_ID},target=/root/.m2 ./mvnw -B -ntp package -DskipTests
 
 FROM eclipse-temurin:21.0.12.1_1-jre-noble@sha256:0c324fbe2e1455c3159184717440f3b52906ef82a39c4a6efc9edb401d31971a AS runtime
 ARG APP_UID=10001

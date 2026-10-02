@@ -28,6 +28,8 @@ As portas do host são configuráveis; as portas internas permanecem 4200, 8080 
 
 ## Build e testes
 
+Os comandos de build e testes apenas com Docker estão no [guia Docker](docs/pt-BR/docker.md#builds-reproduzíveis-e-verificação-isolada); esse fluxo não exige Java, Maven, Node ou npm no host.
+
 Com JDK 21 e Node.js 22.23.3 instalados:
 
 ```sh

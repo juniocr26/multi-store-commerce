@@ -28,6 +28,8 @@ Host ports are configurable; internal ports remain 4200, 8080 and 5432. PostgreS
 
 ## Build and test
 
+Docker-only build and test commands are available in the [Docker guide](docs/en/docker.md#reproducible-builds-and-isolated-verification); no host Java, Maven, Node or npm installation is needed for that workflow.
+
 With JDK 21 and Node.js 22.23.3 installed:
 
 ```sh

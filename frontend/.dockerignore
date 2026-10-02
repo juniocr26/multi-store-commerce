@@ -7,3 +7,8 @@ node_modules
 dist
 .angular
 out-tsc
+
+.m2
+**/*.class
+*.log
+.DS_Store

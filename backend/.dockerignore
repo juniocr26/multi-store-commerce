@@ -4,3 +4,8 @@
 .dockerized-*
 **/.dockerized-*
 target
+
+.m2
+**/*.class
+*.log
+.DS_Store
