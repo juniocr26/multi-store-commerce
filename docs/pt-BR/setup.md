@@ -2,7 +2,7 @@
 
 [English](../en/setup.md) · [Fluxo Docker](docker.md)
 
-Executar somente via Docker não exige Java ou Node no host. Desenvolvimento direto exige JDK 21 (`JAVA_HOME`), Node 22.23.3 (`frontend/.nvmrc`), npm e PostgreSQL 17. Maven Wrapper baixa Maven 3.9.11 no primeiro uso. No Windows utilize `mvnw.cmd` e a sintaxe equivalente de variáveis do shell.
+Executar somente via Docker não exige Java ou Node no host. Desenvolvimento direto exige JDK 25 (`JAVA_HOME`), Node 22.23.3 (`frontend/.nvmrc`), npm e PostgreSQL 17. Maven Wrapper baixa Maven 3.9.11 no primeiro uso. No Windows utilize `mvnw.cmd` e a sintaxe equivalente de variáveis do shell.
 
 Para DBeaver no host Docker, use host `127.0.0.1`, porta `POSTGRES_HOST_PORT` do `.env` (padrão `5432`), banco `POSTGRES_DB`, usuário `POSTGRES_USER` e senha `POSTGRES_PASSWORD`. Se a porta `5432` estiver ocupada, defina `POSTGRES_HOST_PORT=5433` e use `5433` no DBeaver. Aplique com `docker compose up -d --force-recreate postgres`; os arquivos e as credenciais existentes do banco são preservados.
 

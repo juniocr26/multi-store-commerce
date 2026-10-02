@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM eclipse-temurin:21.0.12.1_1-jdk-noble@sha256:1afee26c547e1aa89f47404854dd09203b8bd35a2be269e16bdfd69c4a2c2b50 AS build
+FROM eclipse-temurin:25.0.4.1_1-jdk-noble@sha256:0d623ea18d7b0fe1e12a2c0a920f7e950cad433387e5a49d3611e1507fa07602 AS build
 # Wrapper 3.3.4 falls back to tar.gz without unzip, but the pinned checksum is
 # for the ZIP. Keep the downloaded archive and integrity check consistent.
 RUN apt-get update && apt-get install -y --no-install-recommends unzip \
@@ -13,7 +13,7 @@ RUN --mount=type=cache,id=${MAVEN_CACHE_ID},target=/root/.m2 ./mvnw -B -ntp depe
 COPY src src
 RUN --mount=type=cache,id=${MAVEN_CACHE_ID},target=/root/.m2 ./mvnw -B -ntp package -DskipTests
 
-FROM eclipse-temurin:21.0.12.1_1-jre-noble@sha256:0c324fbe2e1455c3159184717440f3b52906ef82a39c4a6efc9edb401d31971a AS runtime
+FROM eclipse-temurin:25.0.4.1_1-jre-noble@sha256:398f810215757dc1926390014272579fb0e57c41ef1c8aa4f64ae761613a168b AS runtime
 ARG APP_UID=10001
 ARG APP_GID=10001
 RUN groupadd --gid $APP_GID commerce && useradd --uid $APP_UID --gid $APP_GID --create-home commerce

@@ -30,7 +30,7 @@ As portas do host são configuráveis; as portas internas permanecem 4200, 8080 
 
 Os comandos de build e testes apenas com Docker estão no [guia Docker](docs/pt-BR/docker.md#builds-reproduzíveis-e-verificação-isolada); esse fluxo não exige Java, Maven, Node ou npm no host.
 
-Com JDK 21 e Node.js 22.23.3 instalados:
+Com JDK 25 e Node.js 22.23.3 instalados:
 
 ```sh
 (cd backend && ./mvnw verify)
@@ -45,7 +45,7 @@ Consulte [setup e testes](docs/pt-BR/setup.md), [Docker e configuração](docs/p
 
 | Componente | Version |
 | --- | --- |
-| Java / Eclipse Temurin | 21 LTS / 21.0.12.1+1 |
+| Java / Eclipse Temurin | 25 LTS / 25.0.4.1+1 |
 | Spring Boot | 3.5.16 |
 | Maven / Wrapper | 3.9.11 / 3.3.4 |
 | springdoc OpenAPI | 2.8.17 |

@@ -2,9 +2,9 @@
 
 [Português](../pt-BR/versions.md)
 
-Verified against official documentation and registry metadata on 2026-10-01. These are explicit compatible selections, not a claim that every dependency is the newest available.
+Verified against official documentation and registry metadata on 2026-10-02. These are explicit compatible selections, not a claim that every dependency is the newest available.
 
-Java 21 is an LTS baseline compatible with Boot 3.5.16 (Java 17–25); Temurin 21.0.12.1+1 supplies the JDK build and JRE runtime. Maven 3.9.11 is compatible and pinned by Wrapper 3.3.4. Boot 3.5 avoids introducing a major framework migration into this small foundation; springdoc 2.8.17 follows its Boot 3.5 compatibility family.
+Java 25 is the latest LTS as of 2026-10-02 and is compatible with Boot 3.5.16 (Java 17–25); Temurin 25.0.4.1+1 supplies the JDK build and JRE runtime. Maven 3.9.11 is compatible and pinned by Wrapper 3.3.4. Boot 3.5 avoids introducing a major framework migration into this small foundation; springdoc 2.8.17 follows its Boot 3.5 compatibility family.
 
 Angular 21.2.25 uses CLI/build 21.2.24 (independently published package versions). Angular 21 supports Node 22.12+ and TypeScript 5.9.x; selected Node 22.23.3 LTS, TypeScript 5.9.3 and RxJS 7.8.2 satisfy those ranges. Vitest 4.1.11 and jsdom 27.4.0 support DOM tests without a browser download. npm 10.9.9 bundled with Node runs `npm ci`; the lock was resolved with npm 11.11.1 to avoid an npm 10 peer-resolution crash. The lockfile, rather than a global npm update, controls reproducible installs.
 
@@ -23,6 +23,6 @@ Boot's BOM manages Flyway 11.7.2, Hibernate 6.6.53.Final, PostgreSQL JDBC 42.7.1
 - [Node 22.23.3 checksums](https://nodejs.org/dist/v22.23.3/SHASUMS256.txt)
 - [springdoc compatibility](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot)
 - [PostgreSQL image storage layout](https://hub.docker.com/_/postgres)
-- [Temurin image metadata](https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags/21.0.12.1_1-jre-noble)
+- [Temurin 25.0.4.1+1 image metadata](https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags/25.0.4.1_1-jre-noble)
 - [PostgreSQL image metadata](https://hub.docker.com/v2/repositories/library/postgres/tags/17.11-bookworm)
 - [Node image metadata](https://hub.docker.com/v2/repositories/library/node/tags/22.23.3-bookworm-slim)

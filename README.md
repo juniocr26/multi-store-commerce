@@ -30,7 +30,7 @@ Host ports are configurable; internal ports remain 4200, 8080 and 5432. PostgreS
 
 Docker-only build and test commands are available in the [Docker guide](docs/en/docker.md#reproducible-builds-and-isolated-verification); no host Java, Maven, Node or npm installation is needed for that workflow.
 
-With JDK 21 and Node.js 22.23.3 installed:
+With JDK 25 and Node.js 22.23.3 installed:
 
 ```sh
 (cd backend && ./mvnw verify)
@@ -45,7 +45,7 @@ See [setup and testing](docs/en/setup.md), [Docker and configuration](docs/en/do
 
 | Component | Version |
 | --- | --- |
-| Java / Eclipse Temurin | 21 LTS / 21.0.12.1+1 |
+| Java / Eclipse Temurin | 25 LTS / 25.0.4.1+1 |
 | Spring Boot | 3.5.16 |
 | Maven / Wrapper | 3.9.11 / 3.3.4 |
 | springdoc OpenAPI | 2.8.17 |
